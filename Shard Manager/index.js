@@ -31,7 +31,7 @@ app.set("trust proxy", true);
 ////////////////////////////// Heart Beat //////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
   async function heartbeat() {
-    client.get('Running_shards_count', function(err, reply) {
+    await client.get('Running_shards_count', function(err, reply) {
     if (err) {
         console.log(err);
     } else {
