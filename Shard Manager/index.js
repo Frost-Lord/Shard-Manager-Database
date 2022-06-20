@@ -31,15 +31,14 @@ app.set("trust proxy", true);
 ////////////////////////////// Heart Beat //////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
   async function heartbeat() {
-    await client.get('Running_shards_count', function(err, reply) {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log("shards running count: " + reply);
+    const shardValue = await client.get('Running_shards_count');
+        if (shardValue == null) {
+            console.log(clc.redBright(`::> Heartbeat: No shard running`));
+            await client.set('Running_shards_count', 0);
+        }
+        console.log(clc.greenBright(`::> Heartbeat: ${shardValue} shard(s) running...`));
     }
-    });
-    }
-    setInterval(heartbeat, 100);
+    setInterval(heartbeat, 10000);
 
 
 
