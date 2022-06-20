@@ -30,13 +30,17 @@ app.set("trust proxy", true);
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////// Heart Beat //////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-  client.get('Running_shards', function(err, reply) {
+  async function heartbeat() {
+    client.get('Running_shards_count', function(err, reply) {
     if (err) {
         console.log(err);
     } else {
-        console.log("shards running: " + reply);
+        console.log("shards running count: " + reply);
     }
-  });
+    });
+    }
+    setInterval(heartbeat, 100);
+
 
 
 
