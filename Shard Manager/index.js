@@ -30,11 +30,12 @@ app.set("trust proxy", true);
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////// Heart Beat //////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-client.set('Running_shards', '0', function(err, reply) {
-    console.log(reply); // OK
-  });
   client.get('Running_shards', function(err, reply) {
-    console.log("shards running: " + reply);
+    if (err) {
+        console.log(err);
+    } else {
+        console.log("shards running: " + reply);
+    }
   });
 
 
