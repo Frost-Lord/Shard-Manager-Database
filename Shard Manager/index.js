@@ -33,8 +33,8 @@ app.set("trust proxy", true);
 client.set('Running_shards', '0', function(err, reply) {
     console.log(reply); // OK
   });
-  client.get('Running_shards', function(err, data) {
-    console.log("shards running: " + data);
+  client.get('Running_shards', function(err, reply) {
+    console.log("shards running: " + reply);
   });
 
 
