@@ -36,9 +36,9 @@ app.set("trust proxy", true);
             console.log(clc.redBright(`::> Heartbeat: No shard running`));
             await client.set('Running_shards_count', 0);
         }
-        console.log(clc.greenBright(`::> Heartbeat: ${shardValue} shard(s) running...`));
+        console.log(clc.yellow("::> [Heartbeat]: ") + clc.greenBright(`${shardValue} shard(s) running...`));
     }
-    setInterval(heartbeat, 10000);
+    setInterval(heartbeat, 100000);
 
 
 
