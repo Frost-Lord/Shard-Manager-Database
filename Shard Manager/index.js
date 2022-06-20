@@ -38,7 +38,7 @@ app.set("trust proxy", true);
         }
         console.log(clc.yellow("::> [Heartbeat]: ") + clc.greenBright(`${shardValue} shard(s) running...`));
     }
-    setInterval(heartbeat, 100000);
+    setInterval(heartbeat, 300000);
 
 
 
