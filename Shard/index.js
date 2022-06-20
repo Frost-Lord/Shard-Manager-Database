@@ -3,7 +3,7 @@ const app = express();
 const clc = require("cli-color");
 const cors = require("cors");
 const { createClient } = require('redis');
-
+const axios = require('axios');
 const client = createClient({
   url: "redis://:Fighting35a@103.21.52.122:6379",
 });
@@ -32,9 +32,18 @@ app.set("trust proxy", true);
 ////////////////////////////////////////////////////////////////////////////////
 //create a heartbeat to shard showing that it is online
 async function heartbeat() {
+  axios.post(process.env.Shard-Manager, {
+    ip: "0.0.0.0",
+    name: process.env.name,
+    port: process.env.port,
+}).then(res => {
+    console.log(clc.greenBright(`::> Heartbeat: Shard is online`));
+}).catch(err => {
+    console.log(clc.redBright(`::> Heartbeat: Shard is offline`));
+});
 
 }
-setInterval(heartbeat, 300000);
+heartbeat();
 
 
 
@@ -44,15 +53,12 @@ setInterval(heartbeat, 300000);
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// API //////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
+app.post("/heartbeat", async (req, res) => {
+let {ip , key} = req.body
+if(!ip || !key) return res.status(400).send({ error: "Invalid Shard data" });
+if(key != process.env.API_KEY) return res.status(401).send({ error: "Invalid API key" });
+return res.send(200)  
+});
 
 
 

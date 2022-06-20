@@ -5,6 +5,7 @@ const cors = require("cors");
 const { createClient } = require('redis');
 const mongoose = require('mongoose');
 const ShardsSchema = require("./Database/Schema/shards.js");
+const { default: axios } = require('axios');
 
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////// Database ///////////////////////////////////////
@@ -61,7 +62,6 @@ app.set("trust proxy", true);
         }
         console.log(clc.yellow("::> [Heartbeat]: ") + clc.greenBright(`${shardValue} shard(s) running...`));
 
-        //get each shards from ShardsSchema and there data
         const shards = await ShardsSchema.find({});
         if (shards.length == 0) {
             console.log(clc.redBright(`::> Heartbeat: No shard registered`));
@@ -71,6 +71,19 @@ app.set("trust proxy", true);
             if (shardValue == null) {
                 console.log(clc.redBright(`::> Heartbeat: No shard running`));
                 await client.set(shard.name, 0);
+            }
+
+            const url = `http://${shard.ip}:${shard.port}/heartbeat`;
+            const response = await axios.post(url, {
+                ip: shard.ip,
+                key: process.env.SHARD_KEY,
+            });
+            if (response.status == 200) {
+                console.log(clc.yellow("::> [Heartbeat]: ") + clc.greenBright(`${shard.name} is running...`));
+            }
+            else {
+                console.log(clc.yellow("::> [Heartbeat]: ") + clc.redBright(`${shard.name} is not running...`));
+                client.set(shard.name, 0);
             }
           });
 
@@ -85,13 +98,20 @@ app.post("/api/auth/heartbeat", async (req, res) => {
   if(!shard || !ip || !key) return res.status(400).send({ error: "Invalid Shard data" });
   if(key != process.env.API_KEY) return res.status(401).send({ error: "Invalid API key" });
   let user = await ShardsSchema.findOne({ip: ip})
-  if(user) return res.send(400, "User already exists")
+  if(user) {
+    await ShardsSchema.updateOne({ip: ip}, {$set: {name: shard}})
+    await client.set(shard, ip);
+    await client.set(shard + '_last_heartbeat', Date.now());
+    await client.set('Running_shards_count', await client.get('Running_shards_count') + 1);
+    return res.status(200).send({ message: "Shard updated" });
+  } else {
   let localshard = new ShardsSchema({
       name: shard,
       ip: ip
   })
   await localshard.save()
   console.log(clc.green("Event [Shard]: " + shard))
+  }
 });
 
 
