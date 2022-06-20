@@ -5,7 +5,7 @@ const cors = require("cors");
 const { createClient } = require('redis');
 
 const client = createClient({
-  url: "redis://Fighting35a@103.21.52.122:6379",
+  url: "redis://:Fighting35a@103.21.52.122:6379",
 });
 
 (async () => {

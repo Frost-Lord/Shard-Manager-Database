@@ -2,6 +2,18 @@ const express = require('express');
 const app = express();
 const clc = require("cli-color");
 const cors = require("cors");
+const { createClient } = require('redis');
+
+const client = createClient({
+  url: "redis://:Fighting35a@103.21.52.122:6379",
+});
+
+(async () => {
+    await client.connect();
+})();
+
+client.on('connect', () => console.log('::> Redis Client Connected'));
+client.on('error', (err) => console.log('<:: Redis Client Error', err));
 
 
 app.use(express.urlencoded({ extended: false }));
@@ -42,12 +54,12 @@ app.set("trust proxy", true);
 
 
 /////////////////////////////// SESSION ////////////////////////////////////////
-app.listen(7777, () => {
+app.listen(7776, () => {
     console.log(
       "//////////////////////////////////////////////////////////////////////////////////////////////////"
     );
     console.log(clc.white("App running at:"));
-    console.log(clc.blue("- Shard Manager: localhost:7777"));
+    console.log(clc.blue("- Shard Manager: localhost:7776"));
     console.log(
       "//////////////////////////////////////////////////////////////////////////////////////////////////"
     );
