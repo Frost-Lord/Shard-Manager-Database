@@ -4,8 +4,9 @@ const clc = require("cli-color");
 const cors = require("cors");
 const { createClient } = require('redis');
 const axios = require('axios');
+require('dotenv').config();
 const client = createClient({
-  url: "redis://:Fighting35a@103.21.52.122:6379",
+  url: process.env.redisURL,
 });
 
 (async () => {
@@ -17,7 +18,6 @@ client.on('error', (err) => console.log('<:: Redis Client Error', err));
 
 
 app.use(express.urlencoded({ extended: false }));
-require('dotenv').config();
 app.use(cors());
 app.use(express.json());
 app.use(function (err, req, res, next) {
