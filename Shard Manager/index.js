@@ -6,12 +6,13 @@ const { createClient } = require('redis');
 const mongoose = require('mongoose');
 const ShardsSchema = require("./Database/Schema/shards.js");
 const { default: axios } = require('axios');
+require('dotenv').config();
 
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////// Database ///////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 const client = createClient({
-  url: "redis://:Fighting35a@103.21.52.122:6379",
+  url: process.env.redisURL,
 });
 
 (async () => {
@@ -42,7 +43,6 @@ mongoose.connection.on("disconnected", () => {
 ////////////////////////////////////////////////////////////////////////////////
 
 app.use(express.urlencoded({ extended: false }));
-require('dotenv').config();
 app.use(cors());
 app.use(express.json());
 app.use(function (err, req, res, next) {
