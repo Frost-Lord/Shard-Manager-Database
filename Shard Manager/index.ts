@@ -54,12 +54,13 @@ app.set("trust proxy", true);
     const shardValue = await client.get('Running_shards_count');
         if (shardValue == null) {
             console.log(clc.redBright(`::> Heartbeat: No shard running`));
-            await client.set('Running_shards_count', 0);
+            return await client.set('Running_shards_count', 0);
         }
         console.log(clc.yellow("::> [Heartbeat]: ") + clc.greenBright(`${shardValue} shard(s) running...`));
 
         const shards = await ShardsSchema.find({});
         if (shards.length == 0) {
+            await client.set('Running_shards_count', 0);
             return console.log(clc.redBright(`::> Heartbeat: No shard registered`));
         }
 
@@ -103,16 +104,11 @@ app.set("trust proxy", true);
       let user = await ShardsSchema.findOne({ip: ip})
       if(user) {
         await ShardsSchema.updateOne({ip: ip}, {$set: {name: shard}})
-        await client.set(shard, ip);
         await client.set(shard + '_last_heartbeat', Date.now());
-        let dataa = await client.get('Running_shards_count') || null
-        if(dataa == null) {  }
-        else {
-          await client.set('Running_shards_count', dataa + 1);
-        }
         console.log(clc.green("Event [Shard]: " + shard))
         return res.status(200).send({ message: "Shard updated" });
       } else {
+      await client.set("Running_shards_count", + 1);
       let localshard = new ShardsSchema({
           name: shard,
           ip: ip,
