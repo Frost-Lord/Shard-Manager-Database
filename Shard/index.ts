@@ -1,9 +1,8 @@
-const express = require('express');
+import express from "express";
 const app = express();
-const clc = require("cli-color");
-const cors = require("cors");
-const { createClient } = require('redis');
-const axios = require('axios');
+import  clc from 'cli-color';
+import  { createClient } from "redis";
+import axios from "axios";
 require('dotenv').config();
 const client = createClient({
   url: process.env.redisURL,
@@ -14,13 +13,12 @@ const client = createClient({
 })();
 
 client.on('connect', () => console.log('::> Redis Client Connected'));
-client.on('error', (err) => console.log('<:: Redis Client Error', err));
+client.on('error', (err: any) => console.log('<:: Redis Client Error', err));
 
 
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
 app.use(express.json());
-app.use(function (err, req, res, next) {
+app.use(function (err: { status: any; }, req: any, res: any, next: any) {
   if (!err.status) console.error(err);
   makeError(res, err.status || 500);
 });
@@ -32,14 +30,16 @@ app.set("trust proxy", true);
 ////////////////////////////////////////////////////////////////////////////////
 //create a heartbeat to shard showing that it is online
 async function heartbeat() {
-  axios.post(process.env.Shard-Manager, {
-    ip: "0.0.0.0",
-    name: process.env.name,
+  axios.post(process.env.Shard_Manager || "null", {
+    ip: "120.154.2.65",
+    shard: process.env.name,
     port: process.env.port,
+    key: process.env.API_KEY,
 }).then(res => {
     console.log(clc.greenBright(`::> Heartbeat: Shard is online`));
 }).catch(err => {
-    console.log(clc.redBright(`::> Heartbeat: Shard is offline`));
+    console.log(err)
+    console.log(clc.redBright(`::> Heartbeat: Shard Manager is offline | Invalid data provided`));
 });
 
 }
@@ -64,13 +64,17 @@ return res.send(200)
 
 
 /////////////////////////////// SESSION ////////////////////////////////////////
-app.listen(7776, () => {
+app.listen(process.env.port, () => {
     console.log(
       "//////////////////////////////////////////////////////////////////////////////////////////////////"
     );
     console.log(clc.white("App running at:"));
-    console.log(clc.blue("- Shard Manager: localhost:7776"));
+    console.log(clc.blue("- Shard Manager: localhost:3000"));
     console.log(
       "//////////////////////////////////////////////////////////////////////////////////////////////////"
     );
   });
+function makeError(res: any, arg1: any) {
+  throw new Error("Function not implemented.");
+}
+
