@@ -64,7 +64,6 @@ app.set("trust proxy", true);
         }
 
         shards.forEach(async (shard: any) => {
-
             const shardValue = await client.get(shard.name);
             if (shardValue == null) {
                 console.log(clc.redBright(`::> Heartbeat: No shard running`));
