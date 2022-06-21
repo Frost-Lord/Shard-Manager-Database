@@ -1,4 +1,5 @@
-# This code will aow you to shard data across multiabe shards
+# Sharding:
+This code will alow you to shard data across multiable shards/servers remotly in a fast an efficent manner
 
 
 # Process
