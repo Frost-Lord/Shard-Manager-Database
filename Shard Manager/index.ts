@@ -20,7 +20,7 @@ const client = createClient({
 })();
 
 client.on('connect', () => console.log('::> Redis Client Connected'));
-client.on('error', (err) => console.log('<:: Redis Client Error', err));
+client.on('error', (err: any) => console.log('<:: Redis Client Error', err));
 
 
 mongoose.connect("mongodb://localhost:27017/shardmanager", {
@@ -28,10 +28,10 @@ mongoose.connect("mongodb://localhost:27017/shardmanager", {
     useUnifiedTopology: true
 }).then(() => {
     console.log('Connected to MongoDB')
-}).catch((err) => {
+}).catch((err: string) => {
     console.log('Unable to connect to MongoDB Database.\nError: ' + err)
 })
-mongoose.connection.on("err", err => {
+mongoose.connection.on("err", (err: { stack: any; }) => {
   console.error(`Mongoose connection error: \n ${err.stack}`);
 });
 mongoose.connection.on("disconnected", () => {
@@ -45,7 +45,7 @@ mongoose.connection.on("disconnected", () => {
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(express.json());
-app.use(function (err, req, res, next) {
+app.use(function (err: { status: any; }, req: any, res: any, next: any) {
   if (!err.status) console.error(err);
   makeError(res, err.status || 500);
 });
@@ -66,7 +66,7 @@ app.set("trust proxy", true);
         if (shards.length == 0) {
             console.log(clc.redBright(`::> Heartbeat: No shard registered`));
         }
-        shards.forEach(async (shard) => {
+        shards.forEach(async (shard: { name: any; ip: any; port: any; }) => {
             const shardValue = await client.get(shard.name);
             if (shardValue == null) {
                 console.log(clc.redBright(`::> Heartbeat: No shard running`));
@@ -92,7 +92,7 @@ app.set("trust proxy", true);
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// API //////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-app.post("/api/auth/heartbeat", async (req, res) => {
+app.post("/api/auth/heartbeat", async (req: { body: { shard: any; ip: any; key: any; }; }, res: { status: (arg0: number) => { (): any; new(): any; send: { (arg0: { error?: string; message?: string; }): any; new(): any; }; }; }) => {
   let {shard , ip , key} = req.body
   console.log(shard, ip, key);
   if(!shard || !ip || !key) return res.status(400).send({ error: "Invalid Shard data" });
@@ -129,3 +129,7 @@ app.listen(7777, () => {
       "//////////////////////////////////////////////////////////////////////////////////////////////////"
     );
   });
+function makeError(res: any, arg1: any) {
+  throw new Error("Function not implemented.");
+}
+
