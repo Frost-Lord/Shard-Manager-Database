@@ -61,34 +61,36 @@ app.set("trust proxy", true);
         const shards = await ShardsSchema.find({});
         if (shards.length == 0) {
             await client.set('Running_shards_count', 0);
-            return console.log(clc.redBright(`::> Heartbeat: No shard registered`));
+            return console.log(clc.redBright(`::> [Heartbeat]: No shard registered`));
         }
 
         shards.forEach(async (shard: any) => {
             const shardValue = await client.get(shard.name);
             if (shardValue == null) {
-                console.log(clc.redBright(`::> Heartbeat: No shard running`));
+                console.log(clc.redBright(`::> [Heartbeat]: No shard running`));
                 await client.set(shard.name, 0);
             }
 
             const url = `http://${shard.ip}/${shard.port}/heartbeat`;
-            const response = await axios.post(url, {
+            await axios.post(url, {
                 ip: shard.ip,
                 key: process.env.API_KEY,
-            }).catch(async (err) => {
-                console.log(clc.yellow("::> [Heartbeat]: ") + clc.redBright(`${shard.name} is not running!`));
-                client.set(shard.name, 0);
-                const shardToDelete = await ShardsSchema.findOne({ip: shard.ip});
-                if (shardToDelete) {
-                    await shardToDelete.remove();
-                    console.log(clc.yellow("::> [Heartbeat]: ") + clc.redBright(`${shard.name} has been deleted from the database!`));
-                } else {
-                    console.log(clc.redBright(`::> Heartbeat: No shard registered`));
-                }
-            });
-            if (response) {
-              console.log(clc.redBright(`::> Heartbeat: ${shard.name} is offline`));
+            }).then(async (response) => {
+              console.log(response.status)
+            if (response.status == 200) {
+              console.log(clc.green(`::> Heartbeat: ${shard.name} is online`));
             }
+          }).catch(async (err) => {
+            console.log(clc.yellow("::> [Heartbeat]: ") + clc.redBright(`${shard.name} is not running!`));
+            client.set(shard.name, 0);
+            const shardToDelete = await ShardsSchema.findOne({ip: shard.ip});
+            if (shardToDelete) {
+                await shardToDelete.remove();
+                console.log(clc.yellow("::> [Heartbeat]: ") + clc.redBright(`${shard.name} has been deleted from the database!`));
+            } else {
+                console.log(clc.redBright(`::> Heartbeat: No shard registered`));
+            }
+          });
           });
 
     }
@@ -98,7 +100,6 @@ app.set("trust proxy", true);
 //////////////////////////////////////////////////////////////////////////////// 
     app.post("/api/auth/heartbeat", async (req, res) => {
       let {shard , ip , key, port} = req.body
-      console.log(shard, ip, key, port);
       if(!shard || !ip || !key || !port) return res.status(400).send({ error: "Invalid Shard data" });
       if(key != process.env.API_KEY) return res.status(401).send({ error: "Invalid API key" });
       let user = await ShardsSchema.findOne({ip: ip})
