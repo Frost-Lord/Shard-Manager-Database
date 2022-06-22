@@ -4,18 +4,17 @@ import  clc from 'cli-color';
 import  { createClient } from "redis";
 import axios from "axios";
 require('dotenv').config();
+import * as sessionAuth from "./routes/heartbeat";
+let extIP = require("ext-ip")();
+ 
 const client = createClient({
   url: process.env.redisURL,
 });
-
 (async () => {
     await client.connect();
 })();
-
 client.on('connect', () => console.log('::> Redis Client Connected'));
 client.on('error', (err: any) => console.log('<:: Redis Client Error', err));
-
-
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(function (err: { status: any; }, req: any, res: any, next: any) {
@@ -25,13 +24,11 @@ app.use(function (err: { status: any; }, req: any, res: any, next: any) {
 app.set("trust proxy", true);
 
 
-////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////// Heart Beat //////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-//create a heartbeat to shard showing that it is online
 async function heartbeat() {
+  extIP.get().then((ip: string) => {
   axios.post(process.env.Shard_Manager || "null", {
-    ip: "120.154.2.65",
+    ip: ip,
     shard: process.env.name,
     port: process.env.port,
     key: process.env.API_KEY,
@@ -41,27 +38,14 @@ async function heartbeat() {
     console.log(err)
     console.log(clc.redBright(`::> Heartbeat: Shard Manager is offline | Invalid data provided`));
 });
-
+}, (err: any) => {
+  console.error(err);
+});
 }
 heartbeat();
 
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// API //////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-app.post("/heartbeat", async (req, res) => {
-let {ip , key} = req.body
-if(!ip || !key) return res.status(400).send({ error: "Invalid Shard data" });
-if(key != process.env.API_KEY) return res.status(401).send({ error: "Invalid API key" });
-console.log(clc.green("::> Heartbeat: Online"));
-return res.status(200).send({ message: "Shard is online" });
-});
-
-
+sessionAuth.register(app, client);
 
 
 /////////////////////////////// SESSION ////////////////////////////////////////
@@ -76,6 +60,10 @@ app.listen(process.env.port, () => {
     );
   });
 function makeError(res: any, arg1: any) {
+  throw new Error("Function not implemented.");
+}
+
+function ip(ip: any, arg1: (string: any) => void, arg2: (err: any) => void) {
   throw new Error("Function not implemented.");
 }
 

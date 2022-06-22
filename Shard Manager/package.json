@@ -30,6 +30,7 @@
   "devDependencies": {
     "@types/cli-color": "^2.0.2",
     "@types/express": "^4.17.13",
+    "@types/ip": "^1.1.0",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^18.0.0",
     "nodemon": "^2.0.16",
