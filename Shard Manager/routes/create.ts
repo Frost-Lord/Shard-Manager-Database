@@ -31,6 +31,7 @@ export const registercreate = (app: express.Application, client: any) => {
             key: process.env.API_KEY
           });
         });
-      });      
+      });  
+      return res.status(200).send({ message: "Successfully Created data" });    
   });
 };

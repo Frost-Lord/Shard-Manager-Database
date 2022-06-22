@@ -20,6 +20,6 @@ export const registerdelete = (app: express.Application, client: any) => {
           key: process.env.API_KEY
         });
       });
-      
+      return res.status(200).send({ message: "Successfully deleted" });
   });
 };

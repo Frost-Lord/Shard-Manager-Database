@@ -15,7 +15,7 @@ export const getchunkdata = (app: express.Application, client: any) => {
       return res.status(401).send({ error: "Invalid API key" });
 
     let shards = await ShardSchema.find();
-    let chunks = [];
+    let chunks: string[] = [];
     shards.forEach((shard: any) => {
       const url = `http://${shard.ip}:${shard.port}/api/auth/create`;
       axios.post(url, {
@@ -27,7 +27,8 @@ export const getchunkdata = (app: express.Application, client: any) => {
         console.log(error);
       });
     });
-    
-    
+    let finalField = chunks.join("");
+
+    return res.status(200).send({ field: finalField });
   });
 };
