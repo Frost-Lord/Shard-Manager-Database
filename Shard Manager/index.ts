@@ -7,15 +7,16 @@ import ShardsSchema from "./Database/Schema/shards";
 import * as sessionAuth from "./routes/heartbeat";
 import * as registerData from "./routes/create";
 import * as dataToDelete from "./routes/delete";
+import * as getChunk from "./routes/getChunk";
+import * as shardsize from "./routes/shardSize";
 import axios from "axios";
 require("dotenv").config();
 
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(function (err: { status: number}, res: any) {
-  if (!err.status) console.error(err);
-  makeError(res, err.status || 500);
+app.use(function (err: { status: number; }, res: any) {
+ res.status(err.status || 500);
 });
 app.set("trust proxy", true);
 
@@ -106,6 +107,8 @@ setInterval(heartbeat, 15000);
 sessionAuth.register(app, client);
 registerData.registercreate(app, client);
 dataToDelete.registerdelete(app, client);
+getChunk.getchunkdata(app, client);
+shardsize.ShardSize(app, client);
 
 /////////////////////////////// SESSION ////////////////////////////////////////
 app.listen(7777, () => {
@@ -118,6 +121,3 @@ app.listen(7777, () => {
     "//////////////////////////////////////////////////////////////////////////////////////////////////"
   );
 });
-function makeError(res: any, arg1: any) {
-  throw new Error("Function not implemented.");
-}
