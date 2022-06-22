@@ -14,10 +14,10 @@ const client = createClient({
     await client.connect();
 })();
 client.on('connect', () => console.log('::> Redis Client Connected'));
-client.on('error', (err: any) => console.log('<:: Redis Client Error', err));
+client.on('error', (err: string) => console.log('<:: Redis Client Error', err));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(function (err: { status: any; }, req: any, res: any, next: any) {
+app.use(function (err: { status: number}, res: any) {
   if (!err.status) console.error(err);
   makeError(res, err.status || 500);
 });
@@ -38,7 +38,7 @@ async function heartbeat() {
     console.log(err)
     console.log(clc.redBright(`::> Heartbeat: Shard Manager is offline | Invalid data provided`));
 });
-}, (err: any) => {
+}, (err: string) => {
   console.error(err);
 });
 }

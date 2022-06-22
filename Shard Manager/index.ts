@@ -11,7 +11,7 @@ require("dotenv").config();
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(function (err: { status: any }, req: any, res: any, next: any) {
+app.use(function (err: { status: number}, res: any) {
   if (!err.status) console.error(err);
   makeError(res, err.status || 500);
 });
@@ -26,7 +26,7 @@ const client = createClient({
 })();
 
 client.on("connect", () => console.log("::> Redis Client Connected"));
-client.on("error", (err: any) => console.log("<:: Redis Client Error", err));
+client.on("error", (err: string) => console.log("<:: Redis Client Error", err));
 mongoose
   .connect(
     "mongodb+srv://admin:Fighting35a@cluster0.qslzd.mongodb.net/?retryWrites=true&w=majority"
@@ -37,7 +37,7 @@ mongoose
   .catch((err: string) => {
     console.log("Unable to connect to MongoDB Database.\nError: " + err);
   });
-mongoose.connection.on("err", (err: { stack: any }) => {
+mongoose.connection.on("err", (err: { stack: string }) => {
   console.error(`Mongoose connection error: \n ${err.stack}`);
 });
 mongoose.connection.on("disconnected", () => {
