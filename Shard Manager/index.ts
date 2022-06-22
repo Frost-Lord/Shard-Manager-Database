@@ -5,6 +5,8 @@ import { createClient } from "redis";
 import mongoose from "mongoose";
 import ShardsSchema from "./Database/Schema/shards";
 import * as sessionAuth from "./routes/heartbeat";
+import * as registerData from "./routes/create";
+import * as dataToDelete from "./routes/delete";
 import axios from "axios";
 require("dotenv").config();
 
@@ -102,6 +104,8 @@ setInterval(heartbeat, 15000);
 
 ///////////////////////////////// API //////////////////////////////////////////
 sessionAuth.register(app, client);
+registerData.registercreate(app, client);
+dataToDelete.registerdelete(app, client);
 
 /////////////////////////////// SESSION ////////////////////////////////////////
 app.listen(7777, () => {
