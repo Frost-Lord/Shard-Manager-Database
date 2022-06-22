@@ -1,8 +1,8 @@
 import * as express from "express";
-import ShardsSchema from "../Database/Schema/shards";
+import ShardSchema from "../Database/Schema/shards";
+import ShardDataSchema from "Database/Schema/ShardData";
 import clc from "cli-color";
-import Cryptr from "cryptr";
-const hashkey = new Cryptr(`${process.env.API_KEY}`);
+import axios from "axios";
 
 export const registerdelete = (app: express.Application, client: any) => {
   app.post("/api/auth/delete", async (req, res) => {
@@ -12,6 +12,14 @@ export const registerdelete = (app: express.Application, client: any) => {
     if (key != process.env.API_KEY)
       return res.status(401).send({ error: "Invalid API key" });
 
+      let shards = await ShardSchema.find();
+      shards.forEach((shard: any) => {
+        const url = `http://${shard.ip}:${shard.port}/api/auth/delete`;
+        axios.post(url, {
+          fieldName: field,
+          key: process.env.API_KEY
+        });
+      });
       
   });
 };

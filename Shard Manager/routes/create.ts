@@ -1,6 +1,8 @@
 import * as express from "express";
-import ShardsSchema from "../Database/Schema/ShardData";
+import ShardSchema from "../Database/Schema/shards";
+import ShardDataSchema from "Database/Schema/ShardData";
 import clc from "cli-color";
+import axios from "axios";
 import Cryptr from "cryptr";
 const hashkey = new Cryptr(`${process.env.API_KEY}`);
 
@@ -12,19 +14,23 @@ export const registercreate = (app: express.Application, client: any) => {
     if (key != process.env.API_KEY)
       return res.status(401).send({ error: "Invalid API key" });
 
-      let shards = await ShardsSchema.find();
+      let shards = await ShardSchema.find();
       let shardsSize = shards.length;
       let chunks = [];
       for (let i = 0; i < shardsSize; i++) {
         chunks.push(field.slice(i * (field.length / shardsSize), (i + 1) * (field.length / shardsSize)));
       }
-      chunks.forEach((chunk: any) => {
-        
-        console.log(chunk);
-      });
-
-
-      const encryptedString = hashkey.encrypt('bacon');
-      
+      console.log(clc.bgGreenBright("Event [Shard]: Creating shards..."));
+      chunks.forEach((chunk: string) => {
+        const encryptedString = hashkey.encrypt(chunk);
+        shards.forEach((shard: any) => {
+          const url = `http://${shard.ip}:${shard.port}/api/auth/create`;
+          axios.post(url, {
+            field: encryptedString,
+            fieldname: fieldname,
+            key: process.env.API_KEY
+          });
+        });
+      });      
   });
 };
