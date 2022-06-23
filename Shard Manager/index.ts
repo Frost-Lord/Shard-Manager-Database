@@ -4,10 +4,10 @@ import clc from "cli-color";
 import { createClient } from "redis";
 import mongoose from "mongoose";
 import ShardsSchema from "./Database/Schema/shards";
-import * as sessionAuth from "./routes/heartbeat";
 import * as registerData from "./routes/create";
 import * as dataToDelete from "./routes/delete";
 import * as getChunk from "./routes/getChunk";
+import * as sessionAuth from "./routes/heartbeat";
 import * as shardsize from "./routes/shardSize";
 import axios from "axios";
 require("dotenv").config();
@@ -19,6 +19,11 @@ app.use(function (err: { status: number; }, res: any) {
  res.status(err.status || 500);
 });
 app.set("trust proxy", true);
+
+app.use((req, res, next) => {
+  console.log(clc.greenBright("::> Request: " + req.method + " " + req.url));
+  next();
+});
 
 /////////////////////////////// Database ///////////////////////////////////////
 const client = createClient({

@@ -4,6 +4,7 @@ import clc from "cli-color";
 
 export const ShardSize = (app: express.Application, client: any) => {
   app.post("/api/shardsize", async (req, res) => {
+    console.log(clc.greenBright("::> Shard Size"));
     let { key } = req.body;
     if (!key)
       return res.status(400).send({ error: "Invalid Shard data" });

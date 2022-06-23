@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import styled from "styled-components";
 import axios from "axios";
-import './App.css';
+import "./App.css";
 
 function App() {
   const toastOptions = {
@@ -13,22 +13,24 @@ function App() {
     draggable: true,
     theme: "dark",
   };
-
   const [data, setData] = useState([]);
+
   useEffect(async () => {
-    console.log(process.env.REACT_APP_ShardIP)
-    const Shardsize = await axios.post(process.env.ShardIP, {
-        key: process.env.API_KEY,
-     }).catch(error => {
-      console.log(error);
-      toast.error("Faild to get shard data!", toastOptions);
-     })
-      console.log(Shardsize);
-      console.log(Shardsize.data.localuser);
-      if(Shardsize.status == 200){
-        toast.success("Successfully registered", toastOptions);
-        setData(data);
-      }
+    const shardreq = await axios
+      .post(process.env.REACT_APP_ShardIP + "/api/shardsize", {
+        key: process.env.REACT_APP_API_KEY,
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Faild to get shard data!", toastOptions);
+      });
+    console.log("//////////////////////////////////////");
+    console.log(shardreq);
+    console.log("//////////////////////////////////////");
+    if (shardreq.status == 200) {
+      toast.success("Successfully registered", toastOptions);
+      setData(data);
+    }
   }, []);
   console.log(data);
 
@@ -42,11 +44,14 @@ function App() {
             <a>Registered: </a>
           </div>
         </div>
-        <div>
-          <div class="main">
-            <h1>Welcome to the Dashboard</h1>
-          </div>
-       </div>
+        <div class="main">
+          <form>
+            <label>
+              <a className="textadd">Add Data:</a> <br></br>
+            </label>
+            <input type="submit" value="Submit" />
+          </form>
+        </div>
       </FormContainer>
       <ToastContainer />
     </>
@@ -81,17 +86,6 @@ const FormContainer = styled.div`
     flex-direction: column;
     gap: 2rem;
     object-fit: cover;
-    background-color: #00000076;
-    border-radius: 2rem;
-    padding: 5rem;
-  }
-  form2 {
-    display: flex;
-    position: absolute;
-    left: 400px;
-    object-fit: cover;
-    flex-direction: column;
-    gap: 2rem;
     background-color: #00000076;
     border-radius: 2rem;
     padding: 5rem;
@@ -133,6 +127,5 @@ const FormContainer = styled.div`
     }
   }
 `;
-
 
 export default App;
