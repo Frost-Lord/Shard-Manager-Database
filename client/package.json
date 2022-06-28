@@ -13,6 +13,7 @@
     "react-scripts": "5.0.1",
     "react-toastify": "^9.0.5",
     "styled-components": "^5.3.5",
+    "victory-pie": "^36.5.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

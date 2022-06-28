@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import styled from "styled-components";
 import axios from "axios";
+import { VictoryPie } from "victory-pie";
 import "./App.css";
 
 function App() {
@@ -33,6 +34,11 @@ function App() {
     }
   }, []);
   console.log(data);
+  const myData = [
+    { x: "Group A", y: 900 },
+    { x: "Group B", y: 400 },
+    { x: "Group C", y: 300 },
+  ];
 
   return (
     <>
@@ -52,36 +58,37 @@ function App() {
             <input type="submit" value="Submit" />
           </form>
         </div>
-        <statsContainer>
-        <h1>Pie Chart</h1>
-    <div class="piechart"></div>
-      </statsContainer>
+        <div class="grid-container">
+          <div class="item1">1</div>
+          <div class="item2">2</div>
+          <div class="item3">3</div>
+          <div class="item4">4</div>
+          <div class="item5">5</div>
+          <div class="item6">6</div>
+          <div class="item7">7</div>
+        </div>
       </FormContainer>
       <ToastContainer />
     </>
   );
 }
-const statsContainer = styled.div`
-.piechart {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.piechart {
-  margin-top: 300px;
-  display: block;
-  position: absolute;
-  background: #fff;
-  width: 400px;
-  height: 400px;
-  border-radius: 50%;
-  background-image: conic-gradient(
-      pink 70deg, 
-      lightblue 0 235deg, 
-      orange 0);
-}
-`;
 const FormContainer = styled.div`
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  grid-gap: 10px;
+  background-color: #2196F3;
+  padding: 10px;
+}
+
+.grid-container > div {
+  background-color: #000;
+  text-align: center;
+  padding: 20px 0;
+  font-size: 30px;
+}
+
+
   height: 100vh;
   width: 100vw;
   display: flex;
