@@ -52,11 +52,35 @@ function App() {
             <input type="submit" value="Submit" />
           </form>
         </div>
+        <statsContainer>
+        <h1>Pie Chart</h1>
+    <div class="piechart"></div>
+      </statsContainer>
       </FormContainer>
       <ToastContainer />
     </>
   );
 }
+const statsContainer = styled.div`
+.piechart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.piechart {
+  margin-top: 300px;
+  display: block;
+  position: absolute;
+  background: #fff;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background-image: conic-gradient(
+      pink 70deg, 
+      lightblue 0 235deg, 
+      orange 0);
+}
+`;
 const FormContainer = styled.div`
   height: 100vh;
   width: 100vw;
