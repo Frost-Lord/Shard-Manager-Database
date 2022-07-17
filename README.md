@@ -12,7 +12,3 @@ Similarly, by distributing the data across multiple machines, a sharded database
 
 # Advantages of Sharding
 Sharding allows you to scale your database to handle increased load to a nearly unlimited degree by providing increased read/write throughput, storage capacity, and high availability. Let’s look at each of those in a little more detail.
-
-Increased Read/Write Throughput — By distributing the dataset across multiple shards, both read and write operation capacity is increased as long as read and write operations are confined to a single shard.
-Increased Storage Capacity — Similarly, by increasing the number of shards, you can also increase overall total storage capacity, allowing near-infinite scalability.
-High Availability — Finally, shards provide high availability in two ways. First, since each shard is a replica set, every piece of data is replicated. Second, even if an entire shard becomes unavailable since the data is distributed, the database as a whole still remains partially functional, with part of the schema on different shards.
