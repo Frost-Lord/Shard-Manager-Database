@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DaKing01/Shard-Manager-Database.git"
+    "url": "git+https://github.com/Frost-Lord/Shard-Manager-Database.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/DaKing01/Shard-Manager-Database/issues"
+    "url": "https://github.com/Frost-Lord/Shard-Manager-Database/issues"
   },
-  "homepage": "https://github.com/DaKing01/Shard-Manager-Database#readme",
+  "homepage": "https://github.com/Frost-Lord/Shard-Manager-Database#readme",
   "dependencies": {
     "axios": "^0.27.2",
     "cli-color": "^2.0.2",
